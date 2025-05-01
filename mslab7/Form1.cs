@@ -20,7 +20,7 @@ namespace mslab7
             InitializeChart();
             InitializeDataGridView();
         }
-
+        Random rand = new Random();
         private void InitializeChart()
         {
             //chart1.Series.Clear();
@@ -71,6 +71,8 @@ namespace mslab7
         {
             InitializeDataGridView();
             panel1.Controls.Clear();
+            if (checkBox1.Checked)
+                rand = new Random();
             int x=3,y=3;
             foreach(int size in _samplesCount)
             {
@@ -112,12 +114,12 @@ namespace mslab7
 
         private double[] GenerateSample(int n)
         {
-            Random rand = new Random();
+
             double[] sample = new double[n];
 
             for (int i = 0; i < n; i++)
             {
-                double u = rand.NextDouble();
+                double u = rand.NextDouble()-0.5;
                 sample[i] = DistributionMath.InverseCumulativeDistribution(u);
             }
 
@@ -126,7 +128,9 @@ namespace mslab7
 
         private void CalculateStatistics(double[] sample, Chart chart1)
         {
-            double mean = sample.Average();
+            
+            var pairs = DistributionMath.GetValueProbabilityPairs(sample);
+            double mean = DistributionMath.CalculateExpectedValue(pairs);
             double variance = sample.Select(x => Math.Pow(x - mean, 2)).Sum() / (sample.Length - 1);
 
             // Проверка критерием Колмогорова

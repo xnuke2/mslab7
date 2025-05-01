@@ -30,7 +30,22 @@ namespace mslab7
         public static double InverseCumulativeDistribution(double u)
         {
 
-            return 2 * Math.Atan(2* u-1);
+            return 2 * Math.Atan(2* u);
+        }
+        public static List<(double Value, double Probability)> GetValueProbabilityPairs(double[] sample)
+        {
+            var groups = sample
+                .GroupBy(z => z)
+                .Select(g => (Value: g.Key, Probability: (double)g.Count() / sample.Length))
+                .OrderBy(x => x.Value)
+                .ToList();
+
+            return groups;
+        }
+
+        public static double CalculateExpectedValue(List<(double Value, double Probability)> pairs)
+        {
+            return pairs.Sum(pair => pair.Value * pair.Probability);
         }
 
         // Численное интегрирование для проверки нормировки
